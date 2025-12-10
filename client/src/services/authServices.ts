@@ -1,0 +1,84 @@
+const API_URL = 'http://localhost:3000/api/user'
+
+export const register = async(
+    fullName:string,
+    email:string,
+    password:string,
+    phoneNumber:string
+)=>{
+    const userData = {
+    fullName:fullName,
+    email:email,
+    password:password,
+    phoneNumber:phoneNumber
+};
+const response = await fetch(`${API_URL}/register`, {
+    method:'POST',
+    headers:{
+        'Content-Type':'application/json'
+    },
+    body:JSON.stringify(userData),
+});
+
+const data = await response.json();
+
+if(!response.ok){
+    throw new Error(data.error || 'Registration failed');
+}
+if(data.token){
+    localStorage.setItem('token', data.token);
+}
+return data;
+}
+
+export const login = async(email:string, password:string) =>{
+    const credentials = {
+        email:email,
+        password:password
+    };
+
+    const response = await fetch(`${API_URL}/login`, {
+        method:'POST',
+        headers:{
+            'Content-Type':'application/json',
+        },
+        body:JSON.stringify(credentials)
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+        throw new Error(data.error || 'Login Failed');
+    }
+
+    if(data.token){
+        localStorage.setItem('token', data.token);
+    }
+    return data;
+};
+
+export const getCurrentUser = async() =>{
+    const token = localStorage.getItem('token');
+    if(!token){
+        throw new Error('No token found');
+    }
+    const response = await fetch(`${API_URL}/me`,{
+        method:'GET',
+        headers:{
+            'Content-Type':'application/json',
+            'Authorization':`Bearer ${token}`,
+        },
+    });
+
+    const data = await response.json();
+
+    if(!response.ok){
+        throw new Error(data.error || 'Failed to get user');
+    }
+
+    return data;
+}
+
+export const logout = () =>{
+    localStorage.removeItem('token')
+}

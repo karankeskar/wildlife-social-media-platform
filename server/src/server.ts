@@ -2,6 +2,7 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import userRoutes from './routes/userRoutes';
 
 dotenv.config();
 
@@ -26,6 +27,9 @@ const uri: string =
 app.get('/health', (_req: Request, res: Response) => {
     res.status(200).send('Server is running');
 });
+
+// User Routes
+app.use('/api/user', userRoutes)
 
 const PORT: string | number = process.env.PORT || 3000;
 
