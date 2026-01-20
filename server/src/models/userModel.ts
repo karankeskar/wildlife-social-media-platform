@@ -5,6 +5,11 @@ export interface IUser extends Document{
     email:string;
     password:string;
     phoneNumber:string;
+    bio:string,
+    profile_picture:string,
+    location:string,
+    role:string,
+    is_verified:boolean,
     createdAt:Date;
     updatedAt:Date;
 }

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { toast } from "sonner";
-import {useState} from "react";
+import {useState, useRef, useEffect} from "react";
 import {
   Card,
   CardContent,
@@ -17,6 +17,12 @@ import {
 import { Input } from "@/components/ui/input"
 import {register} from '@/services/authServices'
 
+declare global{
+  interface Window{
+    turnstile?:any
+  }
+}
+
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -24,6 +30,17 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [loading, setLoading] = useState(false);
+  const turnstileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if(window.turnstile && turnstileRef.current && !turnstileRef.current.hasChildNodes()){
+      window.turnstile.render(turnstileRef.current, {
+        sitekey:"1x00000000000000000000AA",
+        theme:"dark"
+      })
+    }
+  },[]);
+
   const handleSubmit = async(e:React.FormEvent) =>{
     e.preventDefault();
 
@@ -108,6 +125,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
               <FieldDescription>Please confirm your password.</FieldDescription>
             </Field>
             <FieldGroup>
+              <Field>
+                <div ref={turnstileRef} />
+              </Field>
               <Field>
                 <Button type="submit" className="w-full" disabled={loading}>{loading ? 'Creating Account ...':'Create Account'}</Button>
                 <Button variant="outline" type="button">
