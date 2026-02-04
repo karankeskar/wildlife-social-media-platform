@@ -3,7 +3,7 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoutes from './routes/userRoutes';
-
+import postRoutes from './routes/postRoutes';
 dotenv.config();
 
 const app: Express = express();
@@ -30,6 +30,9 @@ app.get('/health', (_req: Request, res: Response) => {
 
 // User Routes
 app.use('/api/user', userRoutes)
+
+// Post Routes
+app.use('/api/posts', postRoutes)
 
 const PORT: string | number = process.env.PORT || 3000;
 

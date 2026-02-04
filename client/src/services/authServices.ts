@@ -1,4 +1,5 @@
 const API_URL = 'http://localhost:3000/api/user'
+const API_URL_POST = 'http://localhost:3000/api/posts'
 
 export const register = async(
     fullName:string,
@@ -81,4 +82,31 @@ export const getCurrentUser = async() =>{
 
 export const logout = () =>{
     localStorage.removeItem('token')
+}
+
+export const createPost = async (postData:{
+    title:string,
+    caption?:string,
+    hashtag?:string[],
+    category:string,
+    location?:string,
+    country:string,
+    image?:string,
+    nationalpark?:string,
+    camera?:string,
+    lens?:string,
+    conservation_status?:string
+}) => {
+    const token = localStorage.getItem('token');
+    if(!token){
+        throw new Error("No authentication token found, Please login to post");
+    }
+    const response = await fetch(`${API_URL_POST}/create`,{
+        method: 'POST',
+        headers: {
+            'Content-Type':'application/json',
+            'Authorization':`Bearer ${token}`,
+        },
+        body:JSON.stringify(postData)
+    });
 }
