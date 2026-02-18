@@ -61,3 +61,20 @@ export const CreatePost = async(req: Request, res: Response) =>{
 
     }
 };
+
+export const GetPosts = async(req:Request, res:Response)=>{
+    try{
+        const posts = await Post.find().populate('userId', 'fullName profile_picture').sort({createdAt: -1});
+        return res.status(200).json({
+            success:true,
+            count:posts.length,
+            posts
+        });
+    }
+    catch(err:unknown){
+        if(err instanceof Error){
+            return res.status(500).json({message:err.message});
+        }
+        return res.status(500).json({message:'Server error'});
+    }
+};

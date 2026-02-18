@@ -2,8 +2,10 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+dotenv.config();
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
+import uploadRoutes from './routes/uploadRoutes';
 dotenv.config();
 
 const app: Express = express();
@@ -33,6 +35,9 @@ app.use('/api/user', userRoutes)
 
 // Post Routes
 app.use('/api/posts', postRoutes)
+
+//File upload routes
+app.use('/api/upload', uploadRoutes);
 
 const PORT: string | number = process.env.PORT || 3000;
 
