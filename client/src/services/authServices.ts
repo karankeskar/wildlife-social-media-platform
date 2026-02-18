@@ -1,5 +1,6 @@
 const API_URL = 'http://localhost:3000/api/user'
 const API_URL_POST = 'http://localhost:3000/api/posts'
+const API_URL_UPLOAD = 'http://localhost:3000/api/upload'
 
 export const register = async(
     fullName:string,
@@ -109,4 +110,54 @@ export const createPost = async (postData:{
         },
         body:JSON.stringify(postData)
     });
+    if(!response.ok){
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create post');
+    }
+    return response.json();
+}
+
+export const uploadImage = async (file: File) => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('No authentication token found. Please login.');
+  }
+
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const response = await fetch(API_URL_UPLOAD, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to upload image');
+  }
+
+  return response.json();
+};
+
+export const getPosts = async ()=>{
+    const token = localStorage.getItem('token');
+
+    if(!token){
+        throw new Error('You are not logged in, please login');
+    }
+    const response = await fetch(API_URL_POST,{
+        method:'GET',
+        headers:{
+            'Authorization': `Bearer ${token}`
+        },
+    });
+    if(!response.ok){
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to fetch posts');
+    }
+    return response.json();
 }
