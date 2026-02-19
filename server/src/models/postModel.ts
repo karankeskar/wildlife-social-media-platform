@@ -19,6 +19,11 @@ export interface IPost extends Document{
     updated_at:Date
 }
 const postSchema:Schema<IPost> = new Schema({
+    userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+},
     title:{
         type:String,
         required:[true, "Please enter the title of the post."]
