@@ -6,6 +6,8 @@ dotenv.config();
 import userRoutes from './routes/userRoutes';
 import postRoutes from './routes/postRoutes';
 import uploadRoutes from './routes/uploadRoutes';
+import spotRoutes from './routes/spotRoutes';
+
 dotenv.config();
 
 const app: Express = express();
@@ -38,6 +40,9 @@ app.use('/api/posts', postRoutes)
 
 //File upload routes
 app.use('/api/upload', uploadRoutes);
+
+// Spot and field notes route
+app.use('/api/spots', spotRoutes);
 
 const PORT: string | number = process.env.PORT || 3000;
 

@@ -11,5 +11,18 @@ const spotSchema:Schema<ISpot> = new Schema({
         type:Schema.Types.ObjectId,
         ref:'User',
         required:true,
-    }
-})
+    },
+    postId:{
+        type:Schema.Types.ObjectId,
+        ref:'Post',
+        required: true,
+    },
+},
+{
+    timestamps:true,
+}
+);
+
+spotSchema.index({userId:1, postId:1}, {unique:true});
+
+export const Spot = mongoose.model<ISpot>('Spot', spotSchema);

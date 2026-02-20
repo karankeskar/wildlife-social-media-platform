@@ -12,8 +12,8 @@ export interface IPost extends Document{
     nationalpark:string,
     camera:string,
     lens:string,
-    like_count:Number,
-    comment_count:Number,
+    spot_count:Number,
+    field_notes_count:Number,
     conservation_status:string,
     created_at:Date,
     updated_at:Date
@@ -55,9 +55,21 @@ const postSchema:Schema<IPost> = new Schema({
     },
     lens:{
         type:String
+    },
+    spot_count:{
+        type:Number,
+        default:0
+    },
+    field_notes_count:{
+        type:Number,
+        default:0
+    },
+    conservation_status:{
+        type:String, 
+        enum: ["Least Concern", "Near Threatened", "Vulnerable","Endangered", "Critically Endangered", "Extinct in Wild", "Extinct"]
     }
-
-
-})
+},{
+    timestamps:true
+});
 
 export const Post= mongoose.model<IPost>('Post',postSchema)

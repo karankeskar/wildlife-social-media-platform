@@ -1,6 +1,8 @@
 const API_URL = 'http://localhost:3000/api/user'
 const API_URL_POST = 'http://localhost:3000/api/posts'
 const API_URL_UPLOAD = 'http://localhost:3000/api/upload'
+const API_URL_SPOT = 'http://localhost:3000/api/spots';
+
 
 export const register = async(
     fullName:string,
@@ -161,3 +163,46 @@ export const getPosts = async ()=>{
     }
     return response.json();
 }
+export const toggleSpot = async (postId: string) => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('No authentication token found. Please login.');
+  }
+
+  const response = await fetch(`${API_URL_SPOT}/${postId}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to spot post');
+  }
+
+  return response.json();
+};
+
+export const checkSpot = async (postId: string) => {
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    throw new Error('No authentication token found. Please login.');
+  }
+
+  const response = await fetch(`${API_URL_SPOT}/${postId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || 'Failed to check spot');
+  }
+
+  return response.json();
+};
