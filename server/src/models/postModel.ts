@@ -15,6 +15,8 @@ export interface IPost extends Document{
     spot_count:Number,
     field_notes_count:Number,
     conservation_status:string,
+    longitude:number,
+    latitude:number,
     created_at:Date,
     updated_at:Date
 }
@@ -67,6 +69,14 @@ const postSchema:Schema<IPost> = new Schema({
     conservation_status:{
         type:String, 
         enum: ["Least Concern", "Near Threatened", "Vulnerable","Endangered", "Critically Endangered", "Extinct in Wild", "Extinct"]
+    },
+        latitude: {
+        type: Number,
+        default: null
+    },
+    longitude: {       
+        type: Number,
+        default: null
     }
 },{
     timestamps:true

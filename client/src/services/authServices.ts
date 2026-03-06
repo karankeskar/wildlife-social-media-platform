@@ -2,7 +2,7 @@ const API_URL = 'http://localhost:3000/api/user'
 const API_URL_POST = 'http://localhost:3000/api/posts'
 const API_URL_UPLOAD = 'http://localhost:3000/api/upload'
 const API_URL_SPOT = 'http://localhost:3000/api/spots';
-
+const API_URL_FIELDNOTES = 'http://localhost:3000/api/fieldnotes';
 
 export const register = async(
     fullName:string,
@@ -206,3 +206,59 @@ export const checkSpot = async (postId: string) => {
 
   return response.json();
 };
+
+export const getFieldNotes = async(postId:string) =>{
+    const token = localStorage.getItem('token');
+
+    if(!token){
+        throw new Error("Not logged in please login")
+    }
+    const response = await fetch (`${API_URL_FIELDNOTES}/${postId}`,{
+        headers:{
+            Authorization:`Bearer ${token}`,
+        },
+    });
+    if(!response.ok){
+        const error = await response.json();
+        throw new Error(error.message || "Failed to add field note");
+    }
+    return response.json();
+}
+
+export const addFieldNotes = async(postId:string, content:string)=>{
+    const token = localStorage.getItem('token');
+    if(!token){
+        throw new Error("Not logged in please login");
+    }
+    const response = await fetch(`${API_URL_FIELDNOTES}/${postId}`,{
+        method: "POST",
+        headers:{
+            "Content-Type": "application/json", 
+            Authorization:`Bearer ${token}`,
+        },
+        body:JSON.stringify({content}),
+    });
+    if(!response.ok){
+        const error = await response.json();
+        console.log(error);
+        throw new Error("Failed to add field note");
+    };
+    return response.json();
+}
+
+export const deleteFieldNote = async(noteId:string)=>{
+    const token = localStorage.getItem('token');
+    if(!token){
+        throw new Error("Not logged in please login");
+    }
+    const response = await fetch(`${API_URL_FIELDNOTES}/${noteId}`,{
+        method:"DELETE",
+        headers:{
+            Authorization:`Bearer ${token}`,
+        }
+    });
+    if(!response.ok){
+        throw new Error("Failed to delete field note");
+    }
+    return response.json();
+}

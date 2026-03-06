@@ -2,6 +2,8 @@ import { Eye, MessageCircle, BookOpen, MapPin } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toggleSpot as toggleSpotAPI, checkSpot } from "@/services/authServices";
 import { toast } from "sonner";
+import { FieldNotes } from "./FieldNotes";
+
 
 interface Post {
   _id: string;
@@ -65,6 +67,9 @@ export function PostCard({ post }: { post: Post }) {
   const [spotted, setSpotted] = useState(false);
   const [spotCount, setSpotCount] = useState(post.spot_count || 0);
   const [loading, setLoading] = useState(false);
+  const [showFieldNotes, setShowFieldNotes] = useState(false);
+  const [fieldNotesCount, setFieldNotesCount] = useState(post.field_notes_count || 0);
+
 
   useEffect(() => {
     const check = async () => {
@@ -90,6 +95,10 @@ export function PostCard({ post }: { post: Post }) {
   };
 
   if (!post.userId) return null;
+
+  const handleCountChange = (delta: number) => {
+  setFieldNotesCount((prev) => prev + delta);
+};
 
   const initials = post.userId.fullName?.charAt(0).toUpperCase() || "U";
 
@@ -121,7 +130,7 @@ export function PostCard({ post }: { post: Post }) {
         {/* Time — top right */}
         <div className="absolute top-3 right-3">
           <span
-            className="text-[0.58rem] tracking-[0.1em] text-white/60 bg-black/30 backdrop-blur-sm px-1.5 py-0.5 rounded"
+            className="text-[0.58rem] tracking-widest text-white/60 bg-black/30 backdrop-blur-sm px-1.5 py-0.5 rounded"
             style={{ fontFamily: "'DM Mono', monospace" }}
           >
             {timeAgo(post.createdAt)}
@@ -220,16 +229,25 @@ export function PostCard({ post }: { post: Post }) {
             </span>
           </button>
 
-          {/* Field Notes */}
-          <button className="flex items-center gap-1 text-[#c4bfbb] hover:text-[#6b6864] transition-colors">
-            <MessageCircle style={{ width: "0.95rem", height: "0.95rem" }} />
-            <span
-              className="text-[0.7rem] font-medium"
-              style={{ fontFamily: "'DM Mono', monospace" }}
-            >
-              {post.field_notes_count || 0}
-            </span>
-          </button>
+<button
+  onClick={() => setShowFieldNotes((prev) => !prev)}
+  className={`flex items-center gap-1 transition-colors ${
+    showFieldNotes
+      ? "text-[#2d6a4f]"
+      : "text-[#c4bfbb] hover:text-[#6b6864]"
+  }`}
+>
+  <MessageCircle
+    style={{ width: "0.95rem", height: "0.95rem" }}
+    className={showFieldNotes ? "fill-[#2d6a4f]" : ""}
+  />
+  <span
+    className="text-[0.7rem] font-medium"
+    style={{ fontFamily: "'DM Mono', monospace" }}
+  >
+    {fieldNotesCount}
+  </span>
+</button>
 
           {/* Divider */}
           <div className="w-px h-3 bg-[#e2ddd8]" />
@@ -240,6 +258,14 @@ export function PostCard({ post }: { post: Post }) {
           </button>
         </div>
       </div>
+          {showFieldNotes && (
+  <FieldNotes
+    postId={post._id}
+    currentUserId={JSON.parse(localStorage.getItem("user") || "{}") ?._id}
+    onCountChange={handleCountChange}
+  />
+)}
     </article>
+
   );
 }

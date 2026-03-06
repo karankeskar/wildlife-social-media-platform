@@ -3,6 +3,7 @@ import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import {User} from '../models/userModel'
+import { Post } from '../models/postModel';
 
 // @desc Register new user
 // @route POST /api/register
@@ -13,17 +14,14 @@ export const registerUser = asyncHandler(async(req:Request, res:Response) => {
         res.status(400);
         throw new Error('Please add all fields');
     }
-    // check user exists
     const userExists = await User.findOne({email})
     if(userExists){
         res.status(400);
         throw new Error("User Already Exists")
     }
-    // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
     const user = await User.create({
         fullName,
         email, 
@@ -86,6 +84,10 @@ export const getUser = asyncHandler(async(req:Request, res:Response) => {
     })
 });
 
+export const getProfile = asyncHandler(async(req:Request, res:Response)=>{
+    
+})
+
 const generateToken = (id:string): string => {
     const secret = process.env.JWT_SECRET;
     if(!secret){
@@ -94,4 +96,4 @@ const generateToken = (id:string): string => {
     return jwt.sign({id}, secret, {
             expiresIn:'30d',
     })
-}
+} 

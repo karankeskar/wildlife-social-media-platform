@@ -16,6 +16,27 @@ export const CreatePost = async(req: Request, res: Response) =>{
             lens,
             conservation_status,
         } = req.body;
+        let longitude = null;
+        let latitude = null;
+        
+        const query = [location, country].filter(Boolean).join(", ");
+        if(query){
+            try{
+                const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json`;                
+                const geoRes = await fetch(url, {
+                    headers:{"User-Agent":"NatureConnect/1.0"}
+                });
+                const geoData = await geoRes.json();                
+                if(geoData && geoData[0]){
+                    latitude = parseFloat(geoData[0].lat);
+                    longitude = parseFloat(geoData[0].lon);
+                } else {
+                    console.log("No results returned from Nominatim");
+                }
+            } catch(err) {
+                console.warn("Geocoding failed for:", query, err); // log actual error
+            }
+        }
         const userId = req.user?._id;
         if(!userId){
             return res.status(401).json({message:"User not authenticated"})
@@ -43,8 +64,10 @@ export const CreatePost = async(req: Request, res: Response) =>{
             camera,
             lens,
             conservation_status,
-            like_count:0,
-            comment_count:0
+            spot_count:0,
+            field_notes_count:0,
+            longitude,
+            latitude,
         });
         await createPost.save();
 
