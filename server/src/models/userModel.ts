@@ -9,6 +9,8 @@ export interface IUser extends Document{
     profile_picture:string,
     location:string,
     role:string,
+    camera:string,
+    lens:string,
     is_verified:boolean,
     createdAt:Date;
     updatedAt:Date;
@@ -26,10 +28,39 @@ const userSchema: Schema<IUser> = new Schema({
     password:{
         type:String,
         required:[true, 'Please enter your password']
-    }
-},
-{
-    timestamps:true
-}
-)
+    },
+    phoneNumber: {
+        type: String,
+    },
+    bio: {
+        type: String,
+        default: ''
+    },
+    profile_picture: {
+        type: String,
+        default: ''
+    },
+    location: {
+        type: String,
+        default: ''
+    },
+    role: {
+        type: String,
+        default: 'user'
+    },
+    is_verified: {
+        type: Boolean,
+        default: false
+    },
+    camera: {
+        type: String,
+        default: ''
+    },
+    lens: {
+        type: String,
+        default: ''
+    },
+},{
+    timestamps: true
+});
 export const User = mongoose.model<IUser>('User', userSchema)
